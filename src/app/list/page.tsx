@@ -46,7 +46,7 @@ const ListPage = async () => {
         + '"What do you call a Martian who drinks beer? An ale-ien!".',
     },
   ];
- 
+
   return (
     <main>
       <Container id="list" fluid className="py-3">
