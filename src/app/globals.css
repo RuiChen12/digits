@@ -1,3 +1,11 @@
+/* Set up some CSS variables to theme the application. */
+:root {
+  --nat-navbar-bg: rgb(0, 0, 139); /* darkblue */
+  --nat-navbar-bg-rgb: 0, 0, 139;
+  --nat-navbar-text-color: white;
+  --nat-navbar-highlight-text: khaki;
+}
+
 html,
 body {
   --bs-light-rgb: 236, 236, 236;
@@ -5,10 +13,38 @@ body {
   height: 100%;
   padding: 0;
   margin: 0;
+
+  /* Change bootstrap variable values */
+  --bs-dark: var(--nat-navbar-bg);
+  --bs-dark-rgb: var(--nat-navbar-bg-rgb);
+
+  background: fixed center url("/wispy-clouds.JPG");
+  background-size: cover;
 }
+
 .wrapper {
   box-sizing: border-box;
   min-height: 100%;
   display: flex;
   flex-direction: column;
+}
+
+/* Text color in footer and its links */
+footer,
+footer a {
+  color: var(--nat-navbar-text-color);
+}
+
+/* Navbar theming */
+body .navbar {
+  --bs-navbar-active-color: var(--nat-navbar-highlight-text);
+  --bs-navbar-brand-color: var(--nat-navbar-text-color);
+  --bs-navbar-brand-hover-color: var(--nat-navbar-highlight-text);
+  --bs-navbar-color: var(--nat-navbar-text-color);
+  --bs-navbar-hover-color: var(--nat-navbar-highlight-text);
+}
+
+/* Dropdown menu items inside dark navbar */
+.bg-dark a.dropdown-item {
+  color: var(--nat-navbar-bg);
 }
