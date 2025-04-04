@@ -3,10 +3,11 @@
 'use client';
 
 import { Card, Image } from 'react-bootstrap';
+import Link from 'next/link';
 import { Contact } from '@/lib/validationSchemas';
 
 interface Props {
-  contact: Contact;
+  contact: Contact & { id: number };
 }
 
 const ContactCard: React.FC<Props> = ({ contact }) => (
@@ -28,6 +29,9 @@ const ContactCard: React.FC<Props> = ({ contact }) => (
         </div>
       </div>
     </Card.Body>
+    <Card.Footer>
+      <Link href={`/edit-contact/${contact.id}`}>Edit</Link>
+    </Card.Footer>
   </Card>
 );
 

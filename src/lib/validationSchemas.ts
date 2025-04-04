@@ -17,6 +17,27 @@ export const EditStuffSchema = Yup.object({
   owner: Yup.string().required(),
 });
 
+// ✅ Add Contact schema
+export const AddContactSchema = Yup.object({
+  firstName: Yup.string().required(),
+  lastName: Yup.string().required(),
+  address: Yup.string().required(),
+  image: Yup.string().url().required(),
+  description: Yup.string().required(),
+  owner: Yup.string().required(),
+});
+
+// ✅ Edit Contact schema
+export const EditContactSchema = Yup.object({
+  id: Yup.number().required(),
+  firstName: Yup.string().required(),
+  lastName: Yup.string().required(),
+  address: Yup.string().required(),
+  image: Yup.string().url().required(),
+  description: Yup.string().required(),
+  owner: Yup.string().required(),
+});
+
 // ✅ Contact interface with owner field
 export interface Contact {
   firstName: string;
@@ -24,5 +45,5 @@ export interface Contact {
   address: string;
   image: string;
   description: string;
-  owner: string; // ✅ required for admin views
+  owner: string;
 }
