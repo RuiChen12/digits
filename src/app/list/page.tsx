@@ -1,48 +1,47 @@
+'use server';
+
 import { getServerSession } from 'next-auth';
-import { Col, Container, Row, Table } from 'react-bootstrap';
-import { prisma } from '@/lib/prisma';
-import StuffItem from '@/components/StuffItem';
+import { Col, Container, Row } from 'react-bootstrap';
 import { loggedInProtectedPage } from '@/lib/page-protection';
 import authOptions from '@/lib/authOptions';
+import { prisma } from '@/lib/prisma';
+import { Contact } from '@/lib/validationSchemas';
+import ContactCard from '@/components/ContactCard';
 
-/** Render a list of stuff for the logged in user. */
 const ListPage = async () => {
-  // Protect the page, only logged in users can access it.
   const session = await getServerSession(authOptions);
+
   loggedInProtectedPage(
     session as {
       user: { email: string; id: string; randomKey: string };
-      // eslint-disable-next-line @typescript-eslint/comma-dangle
     } | null,
   );
-  const owner = (session && session.user && session.user.email) || '';
-  const stuff = await prisma.stuff.findMany({
+
+  if (!session || !session.user || !session.user.email) {
+    throw new Error('Not authenticated');
+  }
+
+  const userEmail = session.user.email;
+
+  const contacts = (await prisma.contact.findMany({
     where: {
-      owner,
+      owner: userEmail,
     },
-  });
-  // console.log(stuff);
+  })) as Contact[];
+
   return (
     <main>
       <Container id="list" fluid className="py-3">
         <Row>
           <Col>
-            <h1>Stuff</h1>
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Quantity</th>
-                  <th>Condition</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {stuff.map((item) => (
-                  <StuffItem key={item.id} {...item} />
-                ))}
-              </tbody>
-            </Table>
+            <h2 className="text-center">Contacts</h2>
+            <Row xs={1} md={2} lg={3} className="g-4">
+              {contacts.map((contact) => (
+                <Col key={`Contact-${contact.firstName}-${contact.lastName}`}>
+                  <ContactCard contact={contact} />
+                </Col>
+              ))}
+            </Row>
           </Col>
         </Row>
       </Container>
