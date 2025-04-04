@@ -7,6 +7,8 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Seeding the database');
   const password = await hash('changeme', 10);
+
+  // Seed Users
   config.defaultAccounts.forEach(async (account) => {
     let role: Role = 'USER';
     if (account.role === 'ADMIN') {
@@ -22,17 +24,19 @@ async function main() {
         role,
       },
     });
-    // console.log(`  Created user: ${user.email} with role: ${user.role}`);
   });
+
+  // Seed Stuff
   config.defaultData.forEach(async (data, index) => {
-    let condition: Condition = 'good';
+    let condition: Condition = 'fair';
     if (data.condition === 'poor') {
       condition = 'poor';
     } else if (data.condition === 'excellent') {
       condition = 'excellent';
     } else {
-      condition = 'fair';
+      condition = 'good';
     }
+
     console.log(`  Adding stuff: ${data.name} (${data.owner})`);
     await prisma.stuff.upsert({
       where: { id: index + 1 },
@@ -45,7 +49,25 @@ async function main() {
       },
     });
   });
+
+  // ✅ Seed Contacts using forEach instead of for...of
+  config.defaultContacts.forEach(async (contact, index) => {
+    console.log(`  Adding contact: ${contact.firstName} ${contact.lastName}`);
+    await prisma.contact.upsert({
+      where: { id: index + 1 },
+      update: {},
+      create: {
+        firstName: contact.firstName,
+        lastName: contact.lastName,
+        address: contact.address,
+        image: contact.image,
+        description: contact.description,
+        owner: contact.owner,
+      },
+    });
+  });
 }
+
 main()
   .then(() => prisma.$disconnect())
   .catch(async (e) => {
