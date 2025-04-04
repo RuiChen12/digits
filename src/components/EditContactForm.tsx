@@ -99,7 +99,7 @@ const EditContactForm = ({ contact }: { contact: Contact & { id: number } }) => 
                       </Button>
                     </Col>
                   </Row>
-                </Form.Group>
+                </Form.Group> 
               </Form>
             </Card.Body>
           </Card>
