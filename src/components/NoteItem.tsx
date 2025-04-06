@@ -18,4 +18,4 @@ const NoteItem: React.FC<Props> = ({ note }) => (
   </ListGroup.Item>
 );
 
-export default NoteItem; 
+export default NoteItem;
