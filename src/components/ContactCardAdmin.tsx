@@ -2,14 +2,17 @@
 
 'use client';
 
-import { Card, Image } from 'react-bootstrap';
+import { Card, Image, ListGroup } from 'react-bootstrap';
 import { Contact } from '@/lib/validationSchemas';
+import type { Note } from '@prisma/client';
+import NoteItem from './NoteItem';
 
 interface Props {
   contact: Contact;
+  notes?: Note[]; // ✅ 符合真实数据库结构，且为可选
 }
 
-const ContactCardAdmin: React.FC<Props> = ({ contact }) => (
+const ContactCardAdmin: React.FC<Props> = ({ contact, notes = [] }) => (
   <Card className="h-100">
     <Card.Body>
       <div className="d-flex align-items-start">
@@ -26,6 +29,13 @@ const ContactCardAdmin: React.FC<Props> = ({ contact }) => (
           <hr />
           <Card.Text>{contact.description}</Card.Text>
           <p className="blockquote-footer">{contact.owner}</p>
+
+          {/* ✅ 安全渲染 Note 列表 */}
+          <ListGroup variant="flush" className="mt-3">
+            {notes.map((note) => (
+              <NoteItem key={note.id} note={note} />
+            ))}
+          </ListGroup>
         </div>
       </div>
     </Card.Body>

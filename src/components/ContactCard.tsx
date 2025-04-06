@@ -2,15 +2,28 @@
 
 'use client';
 
-import { Card, Image } from 'react-bootstrap';
+import { Card, Image, ListGroup } from 'react-bootstrap';
 import Link from 'next/link';
-import { Contact } from '@/lib/validationSchemas';
+import type { Note } from '@prisma/client';
+import NoteItem from './NoteItem';
+import AddNoteForm from './AddNoteForm';
 
-interface Props {
-  contact: Contact & { id: number };
+interface Contact {
+  id: number;
+  firstName: string;
+  lastName: string;
+  address: string;
+  image: string;
+  description: string;
+  owner: string;
 }
 
-const ContactCard: React.FC<Props> = ({ contact }) => (
+interface Props {
+  contact: Contact;
+  notes: Note[]; // ✅ 现在是 Date 类型的 createdAt
+}
+
+const ContactCard: React.FC<Props> = ({ contact, notes }) => (
   <Card className="h-100">
     <Card.Body>
       <div className="d-flex align-items-start">
@@ -28,7 +41,18 @@ const ContactCard: React.FC<Props> = ({ contact }) => (
           <Card.Text>{contact.description}</Card.Text>
         </div>
       </div>
+
+      {/* ✅ Note 列表 */}
+      <ListGroup variant="flush" className="mt-3">
+        {notes.map((note) => (
+          <NoteItem key={note.id} note={note} />
+        ))}
+      </ListGroup>
+
+      {/* ✅ 添加 Note 表单 */}
+      <AddNoteForm contactId={contact.id} />
     </Card.Body>
+
     <Card.Footer>
       <Link href={`/edit-contact/${contact.id}`}>Edit</Link>
     </Card.Footer>

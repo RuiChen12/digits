@@ -5,8 +5,8 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { loggedInProtectedPage } from '@/lib/page-protection';
 import authOptions from '@/lib/authOptions';
 import { prisma } from '@/lib/prisma';
-import { Contact } from '@/lib/validationSchemas';
 import ContactCard from '@/components/ContactCard';
+import type { Note } from '@prisma/client'; // ✅ 确保 Note 类型匹配
 
 const ListPage = async () => {
   const session = await getServerSession(authOptions);
@@ -17,17 +17,21 @@ const ListPage = async () => {
     } | null,
   );
 
-  if (!session || !session.user || !session.user.email) {
+  if (!session?.user?.email) {
     throw new Error('Not authenticated');
   }
 
   const userEmail = session.user.email;
 
-  const contacts = (await prisma.contact.findMany({
-    where: {
-      owner: userEmail,
-    },
-  })) as Contact[];
+  // ✅ 获取联系人
+  const contacts = await prisma.contact.findMany({
+    where: { owner: userEmail },
+  });
+
+  // ✅ 获取笔记（并显式声明为 Note[] 类型）
+  const notes: Note[] = await prisma.note.findMany({
+    where: { owner: userEmail },
+  });
 
   return (
     <main>
@@ -37,8 +41,11 @@ const ListPage = async () => {
             <h2 className="text-center">Contacts</h2>
             <Row xs={1} md={2} lg={3} className="g-4">
               {contacts.map((contact) => (
-                <Col key={`Contact-${contact.firstName}-${contact.lastName}`}>
-                  <ContactCard contact={contact} />
+                <Col key={`Contact-${contact.id}`}>
+                  <ContactCard
+                    contact={contact}
+                    notes={notes.filter((note) => note.contactId === contact.id)}
+                  />
                 </Col>
               ))}
             </Row>

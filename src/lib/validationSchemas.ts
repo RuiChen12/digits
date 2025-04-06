@@ -38,7 +38,14 @@ export const EditContactSchema = Yup.object({
   owner: Yup.string().required(),
 });
 
-// ✅ Contact interface with owner field
+// ✅ Add Note schema
+export const AddNoteSchema = Yup.object({
+  note: Yup.string().required(),
+  contactId: Yup.number().required(),
+  owner: Yup.string().required(),
+});
+
+// ✅ Contact interface with owner field (can still be used for form validation)
 export interface Contact {
   firstName: string;
   lastName: string;
